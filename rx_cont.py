@@ -50,16 +50,16 @@ class LoRaRcvCont(LoRa):
 
         msg = bytes(payload).decode("utf-8", "ignore")
         if msg[0] == "0":
-            print("RECV ", msg[1:])
+            print("\nRECV ", msg[1:])
             print
 
             self.set_mode(MODE.SLEEP)
             self.reset_ptr_rx()
             self.set_mode(MODE.RXCONT)
-        elif len(msg) == 4 and msg[0] == "1":
+        elif msg[0] == "1":
             self.nb_packets = int(msg[1:4])
             self.image = []
-            print("RECV IMAGE", nb_packets)
+            print("\nRECV IMAGE", nb_packets)
             print
 
             self.set_mode(MODE.SLEEP)
@@ -70,7 +70,7 @@ class LoRaRcvCont(LoRa):
             payload = self.read_payload(nocheck=True)
             self.image += payload
             self.img_count += 1
-            print(f"PAYLOAD {self.img_count}: {paylad}")
+            print(f"PAYLOAD {self.img_count}: {payload}")
 
             if self.img_count == self.nb_packets:
                 print("IMAGE ", img)
