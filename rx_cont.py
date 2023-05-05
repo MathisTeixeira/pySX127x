@@ -67,8 +67,10 @@ class LoRaRcvCont(LoRa):
             self.set_mode(MODE.RXCONT)
         else:
             self.clear_irq_flags(RxDone=1)
-            self.image += self.read_payload(nocheck=True)
+            payload = self.read_payload(nocheck=True)
+            self.image += payload
             self.img_count += 1
+            print(f"PAYLOAD {self.img_count}: {paylad}")
 
             if self.img_count == self.nb_packets:
                 print("IMAGE ", img)
