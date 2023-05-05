@@ -40,6 +40,7 @@ class LoRaRcvCont(LoRa):
 
         self.img_count = 0
         self.nb_packets = 0
+        self.image = []
 
     def on_rx_done(self):
         nb_packets = 0
@@ -57,7 +58,7 @@ class LoRaRcvCont(LoRa):
             self.set_mode(MODE.RXCONT)
         elif len(msg) == 4 and msg[0] == "1":
             self.nb_packets = int(msg[1:4])
-            img = []
+            self.image = []
             print("RECV IMAGE", nb_packets)
             print
 
@@ -66,7 +67,7 @@ class LoRaRcvCont(LoRa):
             self.set_mode(MODE.RXCONT)
         else:
             self.clear_irq_flags(RxDone=1)
-            img += self.read_payload(nocheck=True)
+            self.image += self.read_payload(nocheck=True)
             self.img_count += 1
 
             if self.img_count == self.nb_packets:
