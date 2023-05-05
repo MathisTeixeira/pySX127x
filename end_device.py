@@ -62,6 +62,7 @@ class LoRaBeacon(LoRa):
         
         # Process image
         msg = f"1{nb_packets:03}"
+        print(msg)
         msg = msg.encode()
         msg = list(msg)
 
