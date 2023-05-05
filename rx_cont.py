@@ -38,17 +38,45 @@ class LoRaRcvCont(LoRa):
         self.set_mode(MODE.SLEEP)
         self.set_dio_mapping([0] * 6)
 
+        self.img_count = 0
+        self.nb_packets = 0
+
     def on_rx_done(self):
-        BOARD.led_on()
-        print("\nRxDone")
+        nb_packets = 0
+
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
-        print("First", payload)
-        print("msg:", bytes(payload).decode("utf-8",'ignore'))
-        self.set_mode(MODE.SLEEP)
-        self.reset_ptr_rx()
-        BOARD.led_off()
-        self.set_mode(MODE.RXCONT)
+
+        msg = bytes(payload).decode("utf-8", "ignore")
+        if msg[0] == "0":
+            print("RECV ", msg[1:])
+            print
+
+            self.set_mode(MODE.SLEEP)
+            self.reset_ptr_rx()
+            self.set_mode(MODE.RXCONT)
+        elif len(msg) == 4 and msg[0] == "1":
+            self.nb_packets = int(msg[1:4])
+            img = []
+            print("RECV IMAGE", nb_packets)
+            print
+
+            self.set_mode(MODE.SLEEP)
+            self.reset_ptr_rx()
+            self.set_mode(MODE.RXCONT)
+        else:
+            self.clear_irq_flags(RxDone=1)
+            img += self.read_payload(nocheck=True)
+            self.img_count += 1
+
+            if self.img_count == self.nb_packets:
+                print("IMAGE ", img)
+                self.nb_packets = 0
+                self.img_count = 0
+
+            self.set_mode(MODE.SLEEP)
+            self.reset_ptr_rx()
+            self.set_mode(MODE.RXCONT)
 
     def on_tx_done(self):
         print("\nTxDone")

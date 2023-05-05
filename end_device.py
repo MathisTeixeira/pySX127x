@@ -104,11 +104,16 @@ def main():
 #    cam = cv2.VideoCapture(0)
 
     while True:
-        input("Input \n")
-        img = ""
-        for i in range(300):
-            img += f"{i}-"
-        lora.send_image(img)
+        cmd = input("Input \n")
+
+        if cmd == "image":
+            img = ""
+            for i in range(300):
+                img += f"{i}-"
+            lora.send_image(img)
+        else:
+            lora.send_message(cmd)
+
         # Check sensor update
         # Send if new data
 
