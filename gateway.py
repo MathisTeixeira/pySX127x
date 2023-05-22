@@ -91,8 +91,17 @@ class gateway(LoRa):
             self.send_ACK()
 
 def main():
+    gw.reset_ptr_rx()
+    gw.set_mode(MODE.RXCONT)
+
     last_image = gw.image
     while True:
+        sleep(.5)
+        rssi_value = self.get_rssi_value()
+        status = self.get_modem_status()
+        sys.stdout.flush()
+        sys.stdout.write("\r%d %d %d" % (rssi_value, status['rx_ongoing'], status['modem_clear']))
+        
         if gw.image is not None and last_image != gw.image:
             cv2.imshow("Camera", gw.image)
             last_image = gw.image
