@@ -40,9 +40,9 @@ class gateway(LoRa):
         self.reset_ptr_rx()
         self.set_mode(MODE.RXCONT)
 
-    # def on_tx_done(self):
-    #     self.reset_ptr_rx()
-    #     self.set_mode(MODE.RXCONT)
+    def on_tx_done(self):
+        self.reset_ptr_rx()
+        self.set_mode(MODE.RXCONT)
 
     def send_ACK(self):
         self.write_payload(ACK_message)
