@@ -40,6 +40,9 @@ class end_device(LoRa):
 
         process(msg)
 
+        self.reset_ptr_rx()
+        self.set_mode(MODE.RXCONT)
+
     def on_tx_done(self):
         self.reset_ptr_rx()
         self.set_mode(MODE.RXCONT)
