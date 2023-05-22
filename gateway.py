@@ -40,9 +40,9 @@ class gateway(LoRa):
         self.reset_ptr_rx()
         self.set_mode(MODE.RXCONT)
 
-    def on_tx_done(self):
-        self.reset_ptr_rx()
-        self.set_mode(MODE.RXCONT)
+    # def on_tx_done(self):
+    #     self.reset_ptr_rx()
+    #     self.set_mode(MODE.RXCONT)
 
     def send_ACK(self):
         self.write_payload(ACK_message)
@@ -95,19 +95,20 @@ class gateway(LoRa):
             self.send_ACK()
 
 def main():
+    gw.reset_ptr_rx()
+    gw.set_mode(MODE.RXCONT)
     last_image = gw.image
+
     while True:
-        gw.reset_ptr_rx()
-        gw.set_mode(MODE.RXCONT)
         sleep(.5)
         rssi_value = gw.get_rssi_value()
         status = gw.get_modem_status()
         sys.stdout.flush()
         sys.stdout.write("\r%d %d %d" % (rssi_value, status['rx_ongoing'], status['modem_clear']))
 
-        if gw.image is not None and last_image != gw.image:
-            cv2.imshow("Camera", gw.image)
-            last_image = gw.image
+        # if gw.image is not None and last_image != gw.image:
+        #     cv2.imshow("Camera", gw.image)
+        #     last_image = gw.image
 
 gw = gateway(verbose=False)
 
