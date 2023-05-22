@@ -1,136 +1,162 @@
-#!/usr/bin/env python
-
+import cv2
 import numpy as np
-import sys
-from time import sleep
+
 from SX127x.LoRa import *
-from SX127x.LoRaArgumentParser import LoRaArgumentParser
 from SX127x.board_config import BOARD
-from math import floor
+
+from time import sleep
 
 BOARD.setup()
 
-parser = LoRaArgumentParser("A simple LoRa beacon")
-parser.add_argument('--single', '-S', dest='single', default=False, action="store_true", help="Single transmission")
-parser.add_argument('--wait', '-w', dest='wait', default=1, action="store", type=float, help="Waiting time between transmissions (default is 0s)")
+CODES = {
+    "ACK": 0x00,
+    "request image": 0x01,
+    "alarm": 0x02,
+    "stop": 0x03,
+    "next": 0x04
+}
 
-PACKET_SIZE = 255
+PACKET_SIZE = 254
 
-class LoRaBeacon(LoRa):
+class end_device(LoRa):
     def __init__(self, verbose=False):
-        super(LoRaBeacon, self).__init__(verbose)
+        super(gateway, self).__init__(verbose)
         self.set_mode(MODE.SLEEP)
         self.set_dio_mapping([1,0,0,0,0,0])
 
+        self.nb_packets = 0
+        self.image = None
+        self.raw_image = []
+        self.packets = None
+        self.image_mode = False
+
+        self.cam = cv2.VideoCapture(0)
+
     def on_rx_done(self):
-        print("\nRxDone")
-        print(self.get_irq_flags())
-        print(map(hex, self.read_payload(nocheck=True)))
-        self.set_mode(MODE.SLEEP)
+        self.clear_irq_flags(RxDone=1)
+        payload = self.read_payload(nocheck=True)
+
+        msg = bytes(payload).decode("utf-8", "ignore")
+
+        process(msg)
+
+    def on_tx_done(self):
         self.reset_ptr_rx()
         self.set_mode(MODE.RXCONT)
 
-    def on_tx_done(self):
-        print("tx done\n")
-
-    def send_message(self, msg):
-        size = len(msg)
-
-        if size > 255:
-            print("Didn't send. Message is too long.")
-            return
-
+    def send(self, payload):
         self.set_mode(MODE.STDBY)
         self.clear_irq_flags(TxDone=1)
 
-        print("SEND ", msg)
-
-        # Process msg
-        msg = "0" + msg     # Add message id
-        msg = msg.encode()
-        msg = list(msg)
-
-        self.write_payload(msg)
+        self.write_payload(payload)
         self.set_mode(MODE.TX)
 
-    def send_image(self, img):
-        size = len(img)
-        nb_packets = floor(size / PACKET_SIZE)
+    def image2packets(self, image):
+        image_size = len(image)
 
-        self.set_mode(MODE.STDBY)
-        self.clear_irq_flags(TxDone=1)
-        
-        # Process image
-        msg = f"1{nb_packets:03}"
-        print(msg)
-        msg = msg.encode()
-        msg = list(msg)
+        packets = []
 
-        self.write_payload(msg)
-        self.set_mode(MODE.TX)
+        index = 0
+        while index + PACKET_SIZE < image_size:
+            packets += [0x03 + image[index : index + PACKET_SIZE]]
+            index += PACKET_SIZE
+        packets += [0x04 + image[index : ]]
 
-        for i in range(nb_packets):
-            self.set_mode(MODE.STDBY)
-            self.clear_irq_flags(TxDone=1)
+        self.nb_packets = len(packets)
 
-            msg = img[i * PACKET_SIZE : (i + 1) * PACKET_SIZE]
-            msg = msg.encode()
-            msg = list(msg)
+        self.packets = iter(packets)
 
-            self.write_payload(msg)
-            self.set_mode(MODE.TX)
+    def process(self, msg):
+        msg_code = msg[0].encode()
+
+        if msg_code == CODES["request image"]:
+            print("[RECV] Activate camera")
+            self.image_mode = True
+            # Activate cam
+            self.image = self.cam.read()
+            self.image2packets(self.image)
 
 
-lora = LoRaBeacon(verbose=False)
-args = parser.parse_args(lora)
+        elif msg_code == CODES["stop"]:
+            print("[RECV] Stop camera")
+            self.image_mode = False
+            # Deactivate camera
 
-lora.set_pa_config(pa_select=1)
+        elif msg_code == CODES["alarm"]:
+            print("[RECV] Toggle alarm")
+            # Toggle alarm, message received from IHM
 
+        elif msg_code == CODES["ACK"]:
+            print("[RECV] ACK")
 
-print(lora)
-assert(lora.get_agc_auto_on() == 1)
+            if self.image_mode == True:
+                if self.nb_packets > 0:
+                    self.nb_packets -= 1
+                    self.send(next(self.packets))
+                
+                else:
+                    # Get new image
+                    self.image = self.cam.read()
+                    self.image2packets(self.image)
 
-print("Beacon config:")
-print("  Wait %f s" % args.wait)
-print("  Single tx = %s" % args.single)
-print("")
-try: input("Press enter to start...")
-except: pass
+        else:
+            print("[RECV] Wrong packet code. Received ", msg_code)
+            
 
 def main():
-    print("\nStart\n")
-    lora.set_mode(MODE.TX)
-
-#    encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
-#    cam = cv2.VideoCapture(0)
-
     while True:
-        cmd = input("Input \n")
+        sleep(0.5)
 
-        if cmd == "image":
-            img = ""
-            for i in range(300):
-                img += f"{i}-"
-            lora.send_image(img)
-        else:
-            lora.send_message(cmd)
+gw = gateway(verbose=False)
 
-        # Check sensor update
-        # Send if new data
+gw.set_pa_config(pa_select=1, max_power=21, output_power=15)
+gw.set_bw(BW.BW125)
+gw.set_coding_rate(CODING_RATE.CR4_8)
+gw.set_spreading_factor(12)
+gw.set_rx_crc(True)
+#gw.set_lna_gain(GAIN.G1)
+#gw.set_implicit_header_mode(False)
+gw.set_low_data_rate_optim(True)
 
-        # If cam enabled
-        # Send image if first time
-        # Send pixels otherwise
+assert(gw.get_agc_auto_on() == 1)
 
 try:
+    print("START")
     main()
 except KeyboardInterrupt:
     sys.stdout.flush()
-    print("")
+    print("Exit")
     sys.stderr.write("KeyboardInterrupt\n")
 finally:
     sys.stdout.flush()
-    print("")
-    lora.set_mode(MODE.SLEEP)
-    print(lora)
+    print("Exit")
+    gw.set_mode(MODE.SLEEP)
     BOARD.teardown()
+
+"""
+RX MODE
+
+ON_EVENT
+    payload = get_data()
+
+    send ( payload )
+    RXMODE
+
+ON_RX
+    if image_mode == True and nb_packets > 0
+        nb_packets--
+        if nb_packets < 0
+            image_mode = False
+        send (next_packet)
+    if request_img
+        img_mode = True
+        activate cam
+    if stop
+        img_mode = False
+
+while img_mode == True
+    get frame
+    packetify
+    send packets
+
+"""

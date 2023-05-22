@@ -49,6 +49,7 @@ class LoRaRcvCont(LoRa):
         payload = self.read_payload(nocheck=True)
 
         msg = bytes(payload).decode("utf-8", "ignore")
+        print("\nMessage 0", msg[0], "\n")
         if msg[0] == "0":
             print("\nRECV ", msg[1:])
             print
