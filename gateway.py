@@ -29,12 +29,16 @@ class gateway(LoRa):
         self.nb_packets = 0
 
     def on_rx_done(self):
+        print("RX DONE")
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
 
         msg = bytes(payload).decode("utf-8", "ignore")
 
         self.process(msg)
+
+        self.reset_ptr_rx()
+        self.set_mode(MODE.RXCONT)
 
     def on_tx_done(self):
         self.reset_ptr_rx()
