@@ -114,7 +114,7 @@ def main():
     payload = [0x01] + payload
     ed.send()
 
-ed = gateway(verbose=False)
+ed = end_device(verbose=False)
 
 ed.set_pa_config(pa_select=1, max_power=21, output_power=15)
 ed.set_bw(BW.BW125)
