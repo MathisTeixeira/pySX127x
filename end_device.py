@@ -104,21 +104,28 @@ class end_device(LoRa):
             
 
 def main():
-    while True:
-        sleep(0.5)
+    # while True:
+    #     sleep(0.5)
 
-gw = gateway(verbose=False)
+    sleep(2)
+    print("Sending")
 
-gw.set_pa_config(pa_select=1, max_power=21, output_power=15)
-gw.set_bw(BW.BW125)
-gw.set_coding_rate(CODING_RATE.CR4_8)
-gw.set_spreading_factor(12)
-gw.set_rx_crc(True)
-#gw.set_lna_gain(GAIN.G1)
-#gw.set_implicit_header_mode(False)
-gw.set_low_data_rate_optim(True)
+    payload = list("Test".encode())
+    payload = [0x01] + payload
+    ed.send()
 
-assert(gw.get_agc_auto_on() == 1)
+ed = gateway(verbose=False)
+
+ed.set_pa_config(pa_select=1, max_power=21, output_power=15)
+ed.set_bw(BW.BW125)
+ed.set_coding_rate(CODING_RATE.CR4_8)
+ed.set_spreading_factor(12)
+ed.set_rx_crc(True)
+#ed.set_lna_gain(GAIN.G1)
+#ed.set_implicit_header_mode(False)
+ed.set_low_data_rate_optim(True)
+
+assert(ed.get_agc_auto_on() == 1)
 
 try:
     print("START")
@@ -130,7 +137,7 @@ except KeyboardInterrupt:
 finally:
     sys.stdout.flush()
     print("Exit")
-    gw.set_mode(MODE.SLEEP)
+    ed.set_mode(MODE.SLEEP)
     BOARD.teardown()
 
 """
