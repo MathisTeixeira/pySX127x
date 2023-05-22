@@ -91,11 +91,10 @@ class gateway(LoRa):
             self.send_ACK()
 
 def main():
-    gw.reset_ptr_rx()
-    gw.set_mode(MODE.RXCONT)
-
     last_image = gw.image
     while True:
+        gw.reset_ptr_rx()
+        gw.set_mode(MODE.RXCONT)
         sleep(.5)
         rssi_value = gw.get_rssi_value()
         status = gw.get_modem_status()
