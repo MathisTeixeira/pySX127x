@@ -112,7 +112,7 @@ def main():
 
     payload = list("Test".encode())
     payload = [0x01] + payload
-    ed.send()
+    ed.send(payload)
 
 ed = end_device(verbose=False)
 
