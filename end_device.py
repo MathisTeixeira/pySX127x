@@ -20,7 +20,7 @@ PACKET_SIZE = 254
 
 class end_device(LoRa):
     def __init__(self, verbose=False):
-        super(gateway, self).__init__(verbose)
+        super(end_device, self).__init__(verbose)
         self.set_mode(MODE.SLEEP)
         self.set_dio_mapping([1,0,0,0,0,0])
 
