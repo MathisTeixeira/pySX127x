@@ -14,9 +14,11 @@ CODES = {
     "first packet": 0x02,
     "image packet": 0x03,
     "last packet": 0x04,
+    "request image": 0x05,
+    "alarm": 0x06,
+    "stop": 0x07,
+    "next": 0x08
 }
-
-ACK_message = list("0".encode())
 
 class gateway(LoRa):
     def __init__(self, verbose=False):
@@ -33,9 +35,10 @@ class gateway(LoRa):
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
 
-        msg = bytes(payload).decode("utf-8", "ignore")
+        msg_code = payload[0]
+        msg = bytes(payload[1:]).decode("utf-8", "ignore")
 
-        self.process(msg)
+        self.process(msg_code, msg)
 
         self.reset_ptr_rx()
         self.set_mode(MODE.RXCONT)
@@ -45,12 +48,10 @@ class gateway(LoRa):
         self.set_mode(MODE.RXCONT)
 
     def send_ACK(self):
-        self.write_payload(ACK_message)
+        self.write_payload([CODES["ACK"]])
         self.set_mode(MODE.TX)
 
-    def process(self, msg):
-        msg_code = msg[0]
-
+    def process(self, msg_code, msg):
         if msg_code == CODES["msg"]:
             print("[RECV] ", msg[1:])
 
@@ -90,7 +91,7 @@ class gateway(LoRa):
             print("[RECV] ACK")
 
         else:
-            print("[RECV] Wrong packet code. Received ", msg_code)
+            print("[RECV] Wrong packet code. Received ", msg_code, "|")
 
             self.send_ACK()
 

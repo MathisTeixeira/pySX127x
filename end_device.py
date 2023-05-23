@@ -10,10 +10,14 @@ BOARD.setup()
 
 CODES = {
     "ACK": 0x00,
-    "request image": 0x01,
-    "alarm": 0x02,
-    "stop": 0x03,
-    "next": 0x04
+    "msg": 0x01,
+    "first packet": 0x02,
+    "image packet": 0x03,
+    "last packet": 0x04,
+    "request image": 0x05,
+    "alarm": 0x06,
+    "stop": 0x07,
+    "next": 0x08
 }
 
 PACKET_SIZE = 254
@@ -36,9 +40,10 @@ class end_device(LoRa):
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
 
-        msg = bytes(payload).decode("utf-8", "ignore")
+        msg_code = payload[0]
+        msg = bytes(payload[1:]).decode("utf-8", "ignore")
 
-        process(msg)
+        self.process(msg_code, msg)
 
         self.reset_ptr_rx()
         self.set_mode(MODE.RXCONT)
@@ -61,17 +66,15 @@ class end_device(LoRa):
 
         index = 0
         while index + PACKET_SIZE < image_size:
-            packets += [0x03 + image[index : index + PACKET_SIZE]]
+            packets += [CODES["image packet"] + image[index : index + PACKET_SIZE]]
             index += PACKET_SIZE
-        packets += [0x04 + image[index : ]]
+        packets += [CODES["last packet"] + image[index : ]]
 
         self.nb_packets = len(packets)
 
         self.packets = iter(packets)
 
-    def process(self, msg):
-        msg_code = msg[0].encode()
-
+    def process(self, msg_code, msg):
         if msg_code == CODES["request image"]:
             print("[RECV] Activate camera")
             self.image_mode = True
@@ -107,17 +110,17 @@ class end_device(LoRa):
             
 
 def main():
-    # while True:
-    #     sleep(0.5)
+    while True:
+        sleep(0.5)
 
-    sleep(2)
-    print("Sending")
-
-    payload = list("Test".encode())
-    payload = [0x01] + payload
-    ed.send(payload)
-
-    sleep(2)
+        i = input("INPUT")
+        if i == "Test":
+            payload = [0x12]
+        else:
+            payload = CODES[i]
+            
+        print("SEND", payload)
+        ed.send(payload)
 
 ed = end_device(verbose=False)
 
