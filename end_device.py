@@ -12,7 +12,7 @@ flame_pin = 21
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(flame_pin, GPIO.IN)
 
-vibration_pin = 21
+vibration_pin = 20
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(vibration_pin, GPIO.IN)
 
