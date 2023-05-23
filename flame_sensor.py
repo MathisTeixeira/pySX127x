@@ -11,4 +11,4 @@ def callback(channel):
 GPIO.add_event_detect(flame_pin, GPIO.BOTH, callback=callback, bouncetime=300)
 
 while True:
-    time.sleep(1)
+    sleep(1)
