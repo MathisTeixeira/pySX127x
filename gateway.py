@@ -53,12 +53,12 @@ class gateway(LoRa):
 
     def process(self, msg_code, msg):
         if msg_code == CODES["msg"]:
-            print("[RECV] ", msg[1:])
+            print("[RECV] ", msg)
 
             self.send_ACK()
         
         elif msg_code == CODES["first packet"]:
-            self.nb_packets = int(msg[1:4])
+            self.nb_packets = int(msg[:4])
             self.raw_image = []
 
             print("[RECV] Number of packets ", self.nb_packets)
@@ -67,7 +67,7 @@ class gateway(LoRa):
 
         elif msg_code == CODES["image packet"]:
             self.nb_packets -= 1
-            self.image += msg[1:]
+            self.image += msg
 
             print("[RECV] Number of packets ", self.nb_packets)
 
@@ -79,7 +79,7 @@ class gateway(LoRa):
                 print("[ERROR] Incomplete image")
                 return
 
-            self.raw_image += msg[1:]
+            self.raw_image += msg
             npimg = np.fromstring(self.raw_image, dtype=np.uint8)
             self.image = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
 
