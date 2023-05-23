@@ -6,6 +6,16 @@ from SX127x.board_config import BOARD
 
 from time import sleep
 
+import RPi.GPIO as GPIO
+
+flame_pin = 21
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(flame_pin, GPIO.IN)
+
+vibration_pin = 21
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(vibration_pin, GPIO.IN)
+
 BOARD.setup()
 
 CODES = {
@@ -113,15 +123,6 @@ def main():
     while True:
         sleep(0.5)
 
-        i = input("INPUT")
-        if i == "Test":
-            payload = [0x12]
-        else:
-            payload = [CODES[i]]
-
-        print("SEND", payload)
-        ed.send(payload)
-
 ed = end_device(verbose=False)
 
 ed.set_pa_config(pa_select=1, max_power=21, output_power=15)
@@ -134,6 +135,32 @@ ed.set_rx_crc(True)
 ed.set_low_data_rate_optim(True)
 
 assert(ed.get_agc_auto_on() == 1)
+
+
+
+def flame_callback(channel):
+    payload = "Flame detected"
+
+    print("[SEND]", payload)
+
+    payload = list(payload.encode())
+    payload = [CODES["msg"]] + payload
+
+    ed.send(payload)
+
+def vibration_callback(channel):
+    payload = "Vibration detected"
+
+    print("[SEND]", payload)
+
+    payload = list(payload.encode())
+    payload = [CODES["msg"]] + payload
+
+    ed.send(payload)
+
+GPIO.add_event_detect(flame_pin, GPIO.RISING, callback=flame_callback, bouncetime=300)
+GPIO.add_event_detect(vibration_pin, GPIO.RISING, callback=vibration_callback, bouncetime=300)
+
 
 try:
     print("START")
