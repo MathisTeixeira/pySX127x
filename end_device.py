@@ -117,8 +117,8 @@ def main():
         if i == "Test":
             payload = [0x12]
         else:
-            payload = CODES[i]
-            
+            payload = [CODES[i]]
+
         print("SEND", payload)
         ed.send(payload)
 
