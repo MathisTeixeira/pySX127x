@@ -8,7 +8,7 @@ GPIO.setup(flame_pin, GPIO.IN)
 def callback(channel):
     print("Flame detected")
 
-GPIO.add_event_detect(flame_pin, GPIO.BOTH, callback=callback, bouncetime=300)
+GPIO.add_event_detect(flame_pin, GPIO.RISING, callback=callback, bouncetime=100)
 
 while True:
-    sleep(1)
+    pass
