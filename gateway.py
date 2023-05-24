@@ -118,7 +118,7 @@ def main():
             print("SEND Request")
             gw.send([CODES["request image"]])
         else:
-            pass
+            sleep(0.5)
             
 
         # if gw.image is not None and last_image != gw.image:

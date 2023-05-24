@@ -50,6 +50,8 @@ class end_device(LoRa):
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
 
+        print("RX DONE", payload)
+
         msg_code = payload[0]
         msg = bytes(payload[1:]).decode("utf-8", "ignore")
 
