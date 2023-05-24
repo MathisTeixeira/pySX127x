@@ -66,6 +66,7 @@ class end_device(LoRa):
     def on_tx_done(self):
         self.reset_ptr_rx()
         self.set_mode(MODE.RXCONT)
+        print("TX DONE")
 
     def send(self, payload):
         self.set_mode(MODE.STDBY)

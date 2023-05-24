@@ -48,6 +48,8 @@ class gateway(LoRa):
         self.reset_ptr_rx()
         self.set_mode(MODE.RXCONT)
 
+        print("TX DONE")
+
     def send_ACK(self):
         self.write_payload([CODES["ACK"]])
         self.set_mode(MODE.TX)
@@ -55,6 +57,8 @@ class gateway(LoRa):
     def send(self, payload):
         self.set_mode(MODE.STDBY)
         self.clear_irq_flags(TxDone=1)
+
+        print("SENDING", payload)
 
         self.write_payload(payload)
         self.set_mode(MODE.TX)
