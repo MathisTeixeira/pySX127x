@@ -81,6 +81,10 @@ class end_device(LoRa):
         while index + PACKET_SIZE < image_size:
             packets += [CODES["image packet"] + image[index : index + PACKET_SIZE]]
             index += PACKET_SIZE
+        print(type(packets))
+        print(type(CODES["last packet"]))
+        print(type(image[index : ]))
+        print(type([CODES["last packet"] + image[index : ]]))
         packets += [CODES["last packet"] + image[index : ]]
 
         self.nb_packets = len(packets)
