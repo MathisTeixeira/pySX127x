@@ -84,7 +84,8 @@ class end_device(LoRa):
         print(type(packets))
         print(type(CODES["last packet"]))
         print(type(image[index : ]))
-        print(type([CODES["last packet"] + image[index : ]]))
+        print(image[index : ])
+        print(image[index:])
         packets += [CODES["last packet"] + image[index : ]]
 
         self.nb_packets = len(packets)
