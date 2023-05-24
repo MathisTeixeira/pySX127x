@@ -62,7 +62,7 @@ class gateway(LoRa):
 
         self.write_payload(payload)
         self.set_mode(MODE.TX)
-        sleep(1)
+        sleep(3)
 
     def process(self, msg_code, msg):
         if msg_code == CODES["msg"]:
