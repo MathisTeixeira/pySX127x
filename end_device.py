@@ -8,6 +8,8 @@ from time import sleep
 
 import RPi.GPIO as GPIO
 
+encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+
 flame_pin = 21
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(flame_pin, GPIO.IN)
@@ -73,7 +75,9 @@ class end_device(LoRa):
         self.set_mode(MODE.TX)
 
     def image2packets(self, image):
+        ret, image = cv2.imencode(".jpg", frame, encode_param)
         image_size = len(image)
+        print("Image to packets", image_size)
 
         packets = []
 
@@ -86,6 +90,7 @@ class end_device(LoRa):
         self.nb_packets = len(packets)
 
         self.packets = iter(packets)
+        print("end function")
 
     def process(self, msg_code, msg):
         if msg_code == CODES["request image"]:
@@ -94,6 +99,9 @@ class end_device(LoRa):
             # Activate cam
             _, self.image = self.cam.read()
             self.image2packets(self.image)
+
+            nb_packets = list(f"{self.nb_packets:03}".encode())
+            self.send([CODES["first packet"]] + nb_packets)
 
 
         elif msg_code == CODES["stop"]:

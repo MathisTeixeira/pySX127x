@@ -66,7 +66,7 @@ class gateway(LoRa):
             self.send_ACK()
         
         elif msg_code == CODES["first packet"]:
-            self.nb_packets = int(msg[:4])
+            self.nb_packets = int(msg)
             self.raw_image = []
 
             print("[RECV] Number of packets ", self.nb_packets)
