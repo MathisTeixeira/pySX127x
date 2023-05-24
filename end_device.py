@@ -166,12 +166,10 @@ try:
     print("START")
     main()
 except KeyboardInterrupt:
-    GPIO.cleanup()
     sys.stdout.flush()
     print("Exit")
     sys.stderr.write("KeyboardInterrupt\n")
 finally:
-    GPIO.cleanup()
     sys.stdout.flush()
     print("Exit")
     ed.set_mode(MODE.SLEEP)

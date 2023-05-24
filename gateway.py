@@ -5,6 +5,7 @@ from SX127x.LoRa import *
 from SX127x.board_config import BOARD
 
 from time import sleep
+import datetime
 
 BOARD.setup()
 
@@ -51,6 +52,13 @@ class gateway(LoRa):
         self.write_payload([CODES["ACK"]])
         self.set_mode(MODE.TX)
 
+    def send(self, payload):
+        self.set_mode(MODE.STDBY)
+        self.clear_irq_flags(TxDone=1)
+
+        self.write_payload(payload)
+        self.set_mode(MODE.TX)
+
     def process(self, msg_code, msg):
         if msg_code == CODES["msg"]:
             print("[RECV] ", msg)
@@ -67,9 +75,9 @@ class gateway(LoRa):
 
         elif msg_code == CODES["image packet"]:
             self.nb_packets -= 1
-            self.image += msg
+            self.raw_image += msg
 
-            print("[RECV] Number of packets ", self.nb_packets)
+            print("[RECV] Number of packets left ", self.nb_packets)
 
             self.send_ACK()
 
@@ -83,7 +91,10 @@ class gateway(LoRa):
             npimg = np.fromstring(self.raw_image, dtype=np.uint8)
             self.image = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
 
-            print("[RECV] Receive image")
+            date = datetime.datetime.now().strftime("%d-%m-%y-%H-%M-%S")
+            cv2.imwrite(f"./images/{date}.png", self.image)
+
+            print("[RECV] Received image")
 
             self.send_ACK()
 
@@ -93,19 +104,22 @@ class gateway(LoRa):
         else:
             print("[RECV] Wrong packet code. Received ", msg_code, "|")
 
-            self.send_ACK()
-
 def main():
     gw.reset_ptr_rx()
     gw.set_mode(MODE.RXCONT)
     last_image = gw.image
+    start = 0
 
     while True:
-        sleep(.5)
-        rssi_value = gw.get_rssi_value()
-        status = gw.get_modem_status()
-        sys.stdout.flush()
-        sys.stdout.write("\r%d %d %d" % (rssi_value, status['rx_ongoing'], status['modem_clear']))
+        if start == 0:
+            print("SLEEP 2")
+            sleep(2)
+            start = 1
+            print("SEND Request")
+            gw.send([CODES["request image"]])
+        else:
+            pass
+            
 
         # if gw.image is not None and last_image != gw.image:
         #     cv2.imshow("Camera", gw.image)
