@@ -73,6 +73,7 @@ class end_device(LoRa):
         self.set_mode(MODE.TX)
 
     def image2packets(self, image):
+        print(image)
         image_size = len(image)
 
         packets = []
