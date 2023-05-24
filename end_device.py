@@ -75,7 +75,7 @@ class end_device(LoRa):
         self.set_mode(MODE.TX)
 
     def image2packets(self, image):
-        ret, image = cv2.imencode(".jpg", frame, encode_param)
+        ret, image = cv2.imencode(".jpg", image, encode_param)
         image_size = len(image)
         print("Image to packets", image_size)
 
