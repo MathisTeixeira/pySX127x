@@ -53,6 +53,7 @@ class LoRaBeacon(LoRa):
         self.set_mode(MODE.RXCONT)
 
     def on_tx_done(self):
+        print("TX DONE")
         global args
         self.set_mode(MODE.STDBY)
         self.clear_irq_flags(TxDone=1)
