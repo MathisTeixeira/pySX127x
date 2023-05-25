@@ -40,7 +40,7 @@ class mylora(LoRa):
 
     def on_rx_done(self):
         BOARD.led_on()
-        #print("\nRxDone")
+        print("\nRxDone")
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
         print ("Receive: ")
@@ -111,7 +111,7 @@ lora.set_low_data_rate_optim(True)
 #  Medium Range  Defaults after init are 434.0MHz, Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on 13 dBm
 #lora.set_pa_config(pa_select=1)
 
-
+print(lora)
 assert(lora.get_agc_auto_on() == 1)
 
 try:
