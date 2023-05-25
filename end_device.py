@@ -38,8 +38,8 @@ class end_device(LoRa):
     def __init__(self, verbose=False):
         super(end_device, self).__init__(verbose)
         self.set_mode(MODE.SLEEP)
-        self.set_dio_mapping([1,0,0,0,0,0])
-        # self.set_dio_mapping([0] * 6)
+        # self.set_dio_mapping([1,0,0,0,0,0])
+        self.set_dio_mapping([0] * 6)
 
         self.nb_packets = 0
         self.image = None
@@ -50,7 +50,7 @@ class end_device(LoRa):
         self.cam = cv2.VideoCapture(0)
 
     def on_rx_done(self):
-        self.clear_irq_flags(RxDone=0)
+        self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
 
         print("RX DONE", payload)
