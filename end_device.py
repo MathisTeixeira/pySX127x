@@ -72,12 +72,12 @@ class end_device(LoRa):
     #     print("TX DONE")
 
     def on_tx_done(self):
+        print("TX DONE")
         self.set_mode(MODE.STDBY)
         self.clear_irq_flags(TxDone=1)
         sleep(3)
         self.write_payload([0x0f])
         self.set_mode(MODE.TX)
-        print("TX DONE")
 
     def send(self, payload):
         print("SENDING", payload)
@@ -147,6 +147,9 @@ class end_device(LoRa):
 def main():
     ed.reset_ptr_rx()
     ed.set_mode(MODE.RXCONT)
+    ed.set_mode(MODE.STDBY)
+    ed.write_payload([0x0f])
+    ed.set_mode(MODE.TX)
     while True:
         sleep(1)
 
