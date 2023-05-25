@@ -132,14 +132,15 @@ def main():
 
 gw = gateway(verbose=False)
 
-gw.set_pa_config(pa_select=1, max_power=21, output_power=15)
-gw.set_bw(BW.BW125)
-gw.set_coding_rate(CODING_RATE.CR4_8)
-gw.set_spreading_factor(12)
-gw.set_rx_crc(True)
-#gw.set_lna_gain(GAIN.G1)
-#gw.set_implicit_header_mode(False)
-gw.set_low_data_rate_optim(True)
+gw.set_mode(MODE.STDBY)
+gw.set_pa_config(pa_select=1)
+gw.set_bw(BW.BW500)
+gw.set_coding_rate(CODING_RATE.CR4_5)
+gw.set_spreading_factor(7)
+gw.set_rx_crc(False)
+gw.set_low_data_rate_optim(False)
+
+print(gw)
 
 assert(gw.get_agc_auto_on() == 1)
 

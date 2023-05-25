@@ -143,14 +143,15 @@ def main():
 
 ed = end_device(verbose=False)
 
-ed.set_pa_config(pa_select=1, max_power=21, output_power=15)
-ed.set_bw(BW.BW125)
-ed.set_coding_rate(CODING_RATE.CR4_8)
-ed.set_spreading_factor(12)
-ed.set_rx_crc(True)
-#ed.set_lna_gain(GAIN.G1)
-#ed.set_implicit_header_mode(False)
-ed.set_low_data_rate_optim(True)
+ed.set_mode(MODE.STDBY)
+ed.set_pa_config(pa_select=1)
+ed.set_bw(BW.BW500)
+ed.set_coding_rate(CODING_RATE.CR4_5)
+ed.set_spreading_factor(7)
+ed.set_rx_crc(False)
+ed.set_low_data_rate_optim(False)
+
+print(ed)
 
 assert(ed.get_agc_auto_on() == 1)
 
