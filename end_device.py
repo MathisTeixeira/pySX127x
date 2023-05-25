@@ -50,6 +50,7 @@ class end_device(LoRa):
         self.cam = cv2.VideoCapture(0)
 
     def on_rx_done(self):
+        self.set_mode(MODE.STDBY)
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
 
