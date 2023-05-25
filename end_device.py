@@ -66,21 +66,16 @@ class end_device(LoRa):
     def on_tx_done(self):
         self.set_mode(MODE.STDBY)
         self.clear_irq_flags(TxDone=1)
-        
+
         self.reset_ptr_rx()
         self.set_mode(MODE.RXCONT)
         print("TX DONE")
 
     def send(self, payload):
-        self.set_mode(MODE.STDBY)
-        self.clear_irq_flags(TxDone=1)
-
         print("SENDING", payload)
 
         self.write_payload(payload)
         self.set_mode(MODE.TX)
-
-        sleep(3)
 
     def image2packets(self, image):
         ret, image = cv2.imencode(".jpg", image, encode_param)
@@ -136,6 +131,7 @@ class end_device(LoRa):
 
         else:
             print("[RECV] Wrong packet code. Received ", msg_code)
+            self.send([0x0f])
             
 
 def main():
