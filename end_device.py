@@ -146,7 +146,7 @@ def main():
     ed.reset_ptr_rx()
     ed.set_mode(MODE.RXCONT)
     while True:
-        sleep(0.5)
+        sleep(1)
 
 ed = end_device(verbose=False)
 
