@@ -148,6 +148,7 @@ def main():
     ed.reset_ptr_rx()
     ed.set_mode(MODE.RXCONT)
     while True:
+        print(ed.get_irq_flags())
         sleep(1)
 
 ed = end_device(verbose=False)
