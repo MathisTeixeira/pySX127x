@@ -144,6 +144,7 @@ class end_device(LoRa):
             
 
 def main():
+    ed.clear_irq_flags(RxDone=1)
     ed.reset_ptr_rx()
     ed.set_mode(MODE.RXCONT)
     while True:
