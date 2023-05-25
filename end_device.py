@@ -81,6 +81,8 @@ class end_device(LoRa):
 
     def send(self, payload):
         print("SENDING", payload)
+        self.set_mode(MODE.STDBY)
+        self.clear_irq_flags(TxDone=1)
 
         self.write_payload(payload)
         self.set_mode(MODE.TX)
