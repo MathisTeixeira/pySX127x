@@ -11,6 +11,20 @@ SLEEP_TIME = 100
 
 times = []
 
+CODES = {
+    "ACK": 0x00,
+    "msg": 0x01,
+    "first packet": 0x02,
+    "image packet": 0x03,
+    "last packet": 0x04,
+    "request image": 0x05,
+    "alarm": 0x06,
+    "stop": 0x07,
+    "next": 0x08,
+    "image": 0x09,
+    "image size": 0x0a
+}
+
 for _ in range(20):
     cam = cv2.VideoCapture(0)
 
