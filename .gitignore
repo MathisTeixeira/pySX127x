@@ -3,3 +3,17 @@
 *.pyc
 .DS_Store
 .ssh
+end_device_liwa2.py
+end_device_liwa3.py
+end_device_liwa_alarm2.py
+end_device_liwa_alarm3.py
+end_device_liwa_alarm4.py
+end_device_liwa_alarm.py
+end_device_liwa_image2.py
+end_device_liwa_image3.py
+end_device_liwa_image4.py
+end_device_liwa_image5.py
+end_device_liwa_image.py
+end_device_liwa_person2.py
+end_device_liwa_person.py
+end_device_liwa.py
