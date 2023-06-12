@@ -27,13 +27,15 @@ CODES = {
 }
 
 cam = cv2.VideoCapture(0)
+cam.set(cv2.CAP_PROP_FRAME_WIDTH, 144)
+cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 176)
 
 for _ in range(20):
     ret, image = cam.read()
 
     ret, image = cv2.imencode(".jpg", image, encode_param)
     image_size = len(image)
-    # print("Image to packets", image_size)
+    print("Image to packets", image_size)
 
     t0 = time()
 
