@@ -10,6 +10,7 @@ PACKET_SIZE = 255 - CODE_LENGTH - ID_LENGTH
 SLEEP_TIME = 100
 
 times = []
+packets_len = []
 
 CODES = {
     "ACK": 0x00,
@@ -32,7 +33,7 @@ for _ in range(20):
 
     ret, image = cv2.imencode(".jpg", image, encode_param)
     image_size = len(image)
-    print("Image to packets", image_size)
+    # print("Image to packets", image_size)
 
     t0 = time()
 
@@ -47,6 +48,8 @@ for _ in range(20):
     packets += [CODES["image"] + id + image[index : ]]
 
     times.append(time() - t0)
-    print("TIME PACKETIFY", time() - t0)
+    # print("TIME PACKETIFY", time() - t0)
+    packets_len.append(len(packets))
 
-print("MEAN", np.mean(times))
+print("TIME", np.mean(times))
+print("PACKETS", np.mean(packets_len))
