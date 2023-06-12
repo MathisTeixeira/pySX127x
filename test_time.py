@@ -25,9 +25,9 @@ CODES = {
     "image size": 0x0a
 }
 
-for _ in range(20):
-    cam = cv2.VideoCapture(0)
+cam = cv2.VideoCapture(0)
 
+for _ in range(20):
     ret, image = cam.read()
 
     ret, image = cv2.imencode(".jpg", image, encode_param)
