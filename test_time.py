@@ -48,7 +48,8 @@ for _ in range(20):
     packets += [CODES["image"] + id + image[index : ]]
 
     times.append(time() - t0)
-    # print("TIME PACKETIFY", time() - t0)
+    print("TIME PACKETIFY", time() - t0)
+    print("PACKET LENGTH", len(packets))
     packets_len.append(len(packets))
 
 print("TIME", np.mean(times))
