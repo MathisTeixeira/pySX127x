@@ -132,8 +132,6 @@ class end_device(LoRa):
         self.send_image()
 
 def main():
-    ed = end_device(verbose=False)
-
     ed.set_mode(MODE.STDBY)
     ed.set_pa_config(pa_select=1)
     ed.set_bw(BW.BW500)
@@ -152,6 +150,8 @@ def main():
     #   send size + ack = 0
     # if send and ack != 0:
     #   send image
+
+ed = end_device(verbose=False)
 
 try:
     print("START")

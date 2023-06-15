@@ -100,8 +100,6 @@ class gateway(LoRa):
             pass
 
 def main():
-    gw = gateway(verbose=False)
-
     gw.set_mode(MODE.STDBY)
     gw.set_pa_config(pa_select=1)
     gw.set_bw(BW.BW500)
@@ -121,6 +119,8 @@ def main():
     #   packets[id] = msg
     #   if id == last_id:
     #       reconstruct_image()
+
+gw = gateway(verbose=False)
 
 try:
     print("START")
