@@ -91,14 +91,14 @@ class end_device(LoRa):
         index = 0
         id = 0
         while index + PAYLOAD_SIZE < image_size:
+            print(CODES["image"], id)
+            print("PACKET", [CODES["image"] + id + image[index : index + PAYLOAD_SIZE]])
             self.packets += [CODES["image"] + id + image[index : index + PAYLOAD_SIZE]]
             index += PAYLOAD_SIZE
             id += 1
         self.packets += [CODES["image"] + id + image[index : ]]
 
         self.nb_packets = len(self.packets)
-
-        print("PACKETS", self.packets)
 
     def send_image(self):
         for packet in self.packets:
