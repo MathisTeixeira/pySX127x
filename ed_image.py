@@ -81,6 +81,7 @@ class end_device(LoRa):
 
         self.write_payload(payload)
         self.set_mode(MODE.TX)
+        print("end send")
 
     def image2packets(self, image):
         image_size = len(image)
