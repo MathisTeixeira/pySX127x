@@ -58,7 +58,7 @@ class gateway(LoRa):
     def send(self, payload):
         print("SENDING", payload)
 
-        self.set_mode(MODE.STBY)
+        self.set_mode(MODE.STDBY)
         self.set_dio_mapping(DIO_TX)
 
         self.clear_irq_flags(TxDone=1)
