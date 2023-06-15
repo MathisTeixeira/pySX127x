@@ -111,6 +111,8 @@ def main():
     print(gw)
 
     assert(gw.get_agc_auto_on() == 1)
+
+    gw.start()
     # Listen
     # If code == "image size":
     #   packets = [None] * image_size

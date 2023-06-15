@@ -143,6 +143,8 @@ def main():
     print(ed)
 
     assert(ed.get_agc_auto_on() == 1)
+
+    ed.start()
     # capture
     # encode
     # split
