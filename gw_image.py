@@ -66,6 +66,8 @@ class gateway(LoRa):
         self.write_payload(payload)
         self.set_mode(MODE.TX)
 
+        print("end send")
+
     def process(self, msg_code, msg):
         if msg_code == CODES["image size"]:
             self.packets = [None] * msg[0]
