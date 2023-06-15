@@ -21,6 +21,8 @@ CODES = {
     "image size": 0x0a
 }
 
+BOARD.setup()
+
 class gateway(LoRa):
     def __init__(self, verbose=False):
         super(gateway, self).__init__(verbose)
@@ -91,12 +93,26 @@ class gateway(LoRa):
 
     def start(self):
         print("START")
+        self.reset_ptr_rx()
+        self.set_mode(MODE.RXCONT)
 
         while True:
             pass
 
 def main():
-    pass
+    gw = gateway(verbose=False)
+
+    gw.set_mode(MODE.STDBY)
+    gw.set_pa_config(pa_select=1)
+    gw.set_bw(BW.BW500)
+    gw.set_coding_rate(CODING_RATE.CR4_5)
+    gw.set_spreading_factor(7)
+    gw.set_rx_crc(False)
+    gw.set_low_data_rate_optim(False)
+
+    print(gw)
+
+    assert(gw.get_agc_auto_on() == 1)
     # Listen
     # If code == "image size":
     #   packets = [None] * image_size
@@ -105,3 +121,16 @@ def main():
     #   packets[id] = msg
     #   if id == last_id:
     #       reconstruct_image()
+
+try:
+    print("START")
+    main()
+except KeyboardInterrupt:
+    sys.stdout.flush()
+    print("Exit")
+    sys.stderr.write("KeyboardInterrupt\n")
+finally:
+    sys.stdout.flush()
+    print("Exit")
+    gw.set_mode(MODE.SLEEP)
+    BOARD.teardown()

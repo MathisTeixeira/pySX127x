@@ -107,6 +107,9 @@ class end_device(LoRa):
 
     def start(self):
         print("START")
+        self.reset_ptr_rx()
+        self.set_mode(MODE.RXCONT)
+
         sleep(1)
 
         # Read frame
@@ -129,7 +132,19 @@ class end_device(LoRa):
         self.send_image()
 
 def main():
-    pass
+    ed = end_device(verbose=False)
+
+    ed.set_mode(MODE.STDBY)
+    ed.set_pa_config(pa_select=1)
+    ed.set_bw(BW.BW500)
+    ed.set_coding_rate(CODING_RATE.CR4_5)
+    ed.set_spreading_factor(7)
+    ed.set_rx_crc(False)
+    ed.set_low_data_rate_optim(False)
+
+    print(ed)
+
+    assert(ed.get_agc_auto_on() == 1)
     # capture
     # encode
     # split
@@ -137,3 +152,16 @@ def main():
     #   send size + ack = 0
     # if send and ack != 0:
     #   send image
+
+try:
+    print("START")
+    main()
+except KeyboardInterrupt:
+    sys.stdout.flush()
+    print("Exit")
+    sys.stderr.write("KeyboardInterrupt\n")
+finally:
+    sys.stdout.flush()
+    print("Exit")
+    ed.set_mode(MODE.SLEEP)
+    BOARD.teardown()
