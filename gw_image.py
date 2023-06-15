@@ -71,7 +71,7 @@ class gateway(LoRa):
             self.packets = [None] * int(msg)   # /!\ int(msg) 
             self.nb_packets = int(msg)    # /!\ int(msg) 
 
-
+            self.send([CODES["ACK"]])
 
         elif msg_code == CODES["image"]:
             id = int(msg[0])   # /!\ int(msg) 

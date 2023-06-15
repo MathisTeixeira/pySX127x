@@ -123,7 +123,7 @@ class end_device(LoRa):
         self.image2packets(encoded_frame)
 
         # Send
-        self.send(CODES["image size"])
+        self.send([CODES["image size"]])
 
         while self.ack == False:
             print("Waiting for ACK...")
