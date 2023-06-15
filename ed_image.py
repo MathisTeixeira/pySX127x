@@ -92,7 +92,7 @@ class end_device(LoRa):
         index = 0
         id = 0
         while index + PAYLOAD_SIZE < image_size:
-            self.packets += [CODES["image"], id] + list(image[index : index + PAYLOAD_SIZE])
+            self.packets += [[CODES["image"], id] + list(image[index : index + PAYLOAD_SIZE])]
             index += PAYLOAD_SIZE
             id += 1
         self.packets += [CODES["image"], id] + list(image[index : ])
