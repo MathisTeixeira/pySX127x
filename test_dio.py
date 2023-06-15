@@ -69,9 +69,9 @@ def main():
             ed.set_mode(MODE.STDBY)
             ed.reset_ptr_rx()
             ed.set_mode(MODE.RXCONT)
-
-        sleep(3)
-        ed.send([0])
+        else:
+            sleep(1)
+            ed.send([0])
         i += 1
 
 ed = end_device(verbose=False)
