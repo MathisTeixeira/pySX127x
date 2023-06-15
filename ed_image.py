@@ -84,6 +84,7 @@ class end_device(LoRa):
         print("end send")
 
     def image2packets(self, image):
+        print(image.shape)
         image_size = len(image)
 
         self.packets = []
@@ -97,6 +98,7 @@ class end_device(LoRa):
         self.packets += [CODES["image"], id] + list(image[index : ])
 
         self.nb_packets = len(self.packets)
+        print(self.nb_packets)
 
     def send_image(self):
         for packet in self.packets:
