@@ -99,6 +99,8 @@ class end_device(LoRa):
         
         self.nb_packets = len(self.packets)
 
+        print("TEST", self.nb_packets)
+
     def send_image(self):
         for packet in self.packets:
             self.send(packet)
