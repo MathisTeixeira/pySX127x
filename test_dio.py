@@ -66,7 +66,7 @@ def main():
     while True:
         if i > 4:
             ed.set_dio_mapping(DIO_RX)
-            ed.set_mode(MODE.STBY)
+            ed.set_mode(MODE.STDBY)
             ed.reset_ptr_rx()
             ed.set_mode(MODE.RXCONT)
 
