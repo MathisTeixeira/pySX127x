@@ -40,7 +40,7 @@ class gateway(LoRa):
         payload = self.read_payload(nocheck=True)
 
         msg_code = payload[0]
-        msg = bytes(payload[1:])
+        msg = payload[1:]
 
         self.process(msg_code, msg)
 
