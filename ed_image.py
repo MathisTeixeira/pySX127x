@@ -39,6 +39,7 @@ class end_device(LoRa):
         self.set_dio_mapping(DIO_RX)
 
         self.packets = []
+        self.nb_packets = 0
         self.cam = cv2.VideoCapture(0)
         self.cam.set(cv2.CAP_PROP_FRAME_WIDTH, 144)
         self.cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 176)
@@ -123,7 +124,7 @@ class end_device(LoRa):
         self.image2packets(encoded_frame)
 
         # Send
-        self.send([CODES["image size"]])
+        self.send([CODES["image size"], self.nb_packets])
 
         while self.ack == False:
             print("Waiting for ACK...")
