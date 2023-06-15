@@ -67,17 +67,14 @@ class gateway(LoRa):
         self.set_mode(MODE.TX)
 
     def process(self, msg_code, msg):
-        print("PROCESS", type(msg_code), type(msg))
-        print(msg_code)
-        print(msg)
         if msg_code == CODES["image size"]:
-            self.packets = [None] * msg
-            self.nb_packets = msg
+            self.packets = [None] * msg[0]
+            self.nb_packets = msg[0]
 
             self.send([CODES["ACK"]])
 
         elif msg_code == CODES["image"]:
-            id = int(msg[0])   # /!\ int(msg) 
+            id = msg[0]
             self.packets[id] = msg[1:]
             if id == self.nb_packets - 1:
                 self.reconstruct_image()
