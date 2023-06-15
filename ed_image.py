@@ -48,7 +48,7 @@ class end_device(LoRa):
         self.ack = False
 
     def on_rx_done(self):
-        print("\nRX DONE", payload)
+        print("\nRX DONE")
 
         self.set_mode(MODE.STDBY)
         self.clear_irq_flags(RxDone=1)
