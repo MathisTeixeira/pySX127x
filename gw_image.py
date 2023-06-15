@@ -97,7 +97,7 @@ class gateway(LoRa):
         self.set_mode(MODE.RXCONT)
 
         while True:
-            pass
+            sleep(0.1)
 
 def main():
     gw.set_mode(MODE.STDBY)
