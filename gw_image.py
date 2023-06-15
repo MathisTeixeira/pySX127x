@@ -67,6 +67,9 @@ class gateway(LoRa):
         self.set_mode(MODE.TX)
 
     def process(self, msg_code, msg):
+        print("PROCESS", type(msg_code), type(msg))
+        print(msg_code)
+        print(msg)
         if msg_code == CODES["image size"]:
             self.packets = [None] * msg
             self.nb_packets = msg
