@@ -38,7 +38,6 @@ class gateway(LoRa):
         self.set_mode(MODE.STDBY)
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
-        print(type(payload[0]))
 
         msg_code = payload[0]
         msg = bytes(payload[1:])
@@ -69,8 +68,8 @@ class gateway(LoRa):
 
     def process(self, msg_code, msg):
         if msg_code == CODES["image size"]:
-            self.packets = [None] * int(msg)   # /!\ int(msg) 
-            self.nb_packets = int(msg)    # /!\ int(msg) 
+            self.packets = [None] * msg
+            self.nb_packets = msg
 
             self.send([CODES["ACK"]])
 
