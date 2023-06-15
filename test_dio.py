@@ -46,6 +46,10 @@ class end_device(LoRa):
     def on_rx_done(self):
         print("RX DONE")
 
+        self.set_mode(MODE.STDBY)
+        self.clear_irq_flags(RxDone=1)
+        self.set_mode(MODE.STDBY)
+
     def on_tx_done(self):
         print("TX DONE")
 
