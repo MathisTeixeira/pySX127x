@@ -69,6 +69,7 @@ def main():
             ed.set_dio_mapping(DIO_RX)
             ed.reset_ptr_rx()
             ed.set_mode(MODE.RXCONT)
+            sleep(0.1)
         else:
             sleep(1)
             ed.send([0])
