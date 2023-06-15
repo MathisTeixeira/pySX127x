@@ -66,8 +66,11 @@ def main():
     while True:
         if i > 4:
             ed.set_dio_mapping(DIO_RX)
+            ed.reset_ptr_rx()
+            ed.set_mode(MODE.RXCONT)
+
+        sleep(3)
         ed.send([0])
-        sleep(1)
         i += 1
 
 ed = end_device(verbose=False)
@@ -106,8 +109,8 @@ def vibration_callback(channel):
 
     ed.send(payload)
 
-GPIO.add_event_detect(flame_pin, GPIO.RISING, callback=flame_callback, bouncetime=300)
-GPIO.add_event_detect(vibration_pin, GPIO.RISING, callback=vibration_callback, bouncetime=300)
+# GPIO.add_event_detect(flame_pin, GPIO.RISING, callback=flame_callback, bouncetime=300)
+# GPIO.add_event_detect(vibration_pin, GPIO.RISING, callback=vibration_callback, bouncetime=300)
 
 
 try:
